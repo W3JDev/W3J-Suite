@@ -1,0 +1,8 @@
+{
+  "name": "W3J Suite",
+  "description": "W3J Suite, featuring the HOPE AI assistant. An intelligent, agentic application from W3J LLC that leverages the Gemini API for advanced chat, real-time voice conversations, and grounded, accurate information retrieval.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation"
+  ]
+}
