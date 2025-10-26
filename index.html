@@ -38,6 +38,25 @@
               'primary-hover': 'var(--color-teal-400)',
               'border': 'rgba(119, 124, 124, 0.3)',
               'border-subtle': 'rgba(119, 124, 124, 0.15)',
+              'sapphire': {
+                'light': '#3B82F6',
+                'DEFAULT': '#0F52BA'
+              },
+              'amber': {
+                'light': '#FBBF24',
+                'DEFAULT': '#FFBF00',
+                'dark': '#B8860B'
+              },
+              'emerald': {
+                'light': '#34D399',
+                'DEFAULT': '#50C878',
+                'dark': '#009B77'
+              },
+              'amethyst': {
+                'light': '#A78BFA',
+                'DEFAULT': '#9966CC',
+                'dark': '#8A2BE2'
+              },
             },
             fontFamily: {
               sans: ['-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', 'sans-serif'],
@@ -117,10 +136,170 @@
         left: 0;
     }
   }
+
+  /* Sidebar backdrop for mobile */
+  .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 40; /* Just below sidebar */
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sidebar-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+  }
+
+  /* Logo Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .animate-shimmer {
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+    background-size: 200% 200%;
+    animation: shimmer 5s linear infinite;
+  }
+  
+  @keyframes glow {
+    0%, 100% {
+      filter: drop-shadow(0 0 5px rgba(153, 102, 204, 0.5)) drop-shadow(0 0 15px rgba(153, 102, 204, 0.3));
+    }
+    50% {
+      filter: drop-shadow(0 0 15px rgba(153, 102, 204, 0.8)) drop-shadow(0 0 30px rgba(153, 102, 204, 0.5));
+    }
+  }
+
+  /* Ambient Background Animation */
+  body {
+    position: relative;
+    z-index: 1;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: 
+      radial-gradient(ellipse at 20% 80%, rgba(50, 184, 198, 0.1), transparent 50%),
+      radial-gradient(ellipse at 90% 10%, rgba(153, 102, 204, 0.1), transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(230, 129, 97, 0.05), transparent 60%);
+    opacity: 0.6;
+    animation: nebula-swirl 90s linear infinite;
+  }
+
+  @keyframes nebula-swirl {
+    0% {
+      transform: rotate(0deg) scale(1.5);
+      background-position: 0% 50%, 100% 50%, 50% 0%;
+    }
+    50% {
+      transform: rotate(180deg) scale(1.5);
+      background-position: 100% 50%, 0% 50%, 50% 100%;
+    }
+    100% {
+      transform: rotate(360deg) scale(1.5);
+      background-position: 0% 50%, 100% 50%, 50% 0%;
+    }
+  }
+
+  /* Constellation Loader Animation */
+  .constellation-loader {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+  
+  .constellation-loader .node {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #32B8C6;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #32B8C6, 0 0 20px #32B8C6;
+    animation: pulse 2s infinite ease-in-out;
+  }
+
+  .constellation-loader .node:nth-child(1) { top: 10%; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+  .constellation-loader .node:nth-child(2) { top: 30%; left: 20%; animation-delay: -0.4s; }
+  .constellation-loader .node:nth-child(3) { top: 30%; left: 80%; animation-delay: -0.8s; }
+  .constellation-loader .node:nth-child(4) { top: 70%; left: 30%; animation-delay: -1.2s; }
+  .constellation-loader .node:nth-child(5) { top: 70%; left: 70%; animation-delay: -1.6s; }
+  .constellation-loader .node:nth-child(6) { top: 90%; left: 50%; transform: translateX(-50%); animation-delay: -2.0s; }
+  
+  .constellation-loader svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(15deg);
+  }
+  
+  .constellation-loader .line {
+    stroke: rgba(50, 184, 198, 0.3);
+    stroke-width: 1;
+    animation: dash 4s linear infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+  }
+  
+  @keyframes dash {
+    from { stroke-dashoffset: 100; opacity: 0; }
+    to { stroke-dashoffset: 0; opacity: 1; }
+  }
+
+  .initial-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: #1F2121;
+    color: #a7a9a9;
+    font-size: 1.2rem;
+  }
 </style>
 </head>
   <body class="bg-charcoal-700 text-gray-200 font-sans antialiased overflow-hidden">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static Initial Loader for Progressive Enhancement -->
+      <div class="initial-loader">
+        <div class="constellation-loader">
+          <div class="node"></div><div class="node"></div><div class="node"></div>
+          <div class="node"></div><div class="node"></div><div class="node"></div>
+          <svg>
+            <line class="line" x1="50%" y1="10%" x2="20%" y2="30%" stroke-dasharray="5, 5"></line>
+            <line class="line" x1="50%" y1="10%" x2="80%" y2="30%" stroke-dasharray="5, 5"></line>
+            <line class="line" x1="20%" y1="30%" x2="70%" y2="70%" stroke-dasharray="5, 5"></line>
+            <line class="line" x1="80%" y1="30%" x2="30%" y2="70%" stroke-dasharray="5, 5"></line>
+            <line class="line" x1="30%" y1="70%" x2="50%" y2="90%" stroke-dasharray="5, 5"></line>
+            <line class="line" x1="70%" y1="70%" x2="50%" y2="90%" stroke-dasharray="5, 5"></line>
+          </svg>
+        </div>
+        <p>Initializing W3J Suite...</p>
+      </div>
+    </div>
+    <noscript>
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 1.5rem; text-align: center; padding: 2rem;">
+        This application requires JavaScript to function. Please enable it in your browser settings.
+      </div>
+    </noscript>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

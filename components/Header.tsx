@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { LogoIcon, UserIcon, PlusIcon } from './Icons';
+import { StarLogoIcon, UserIcon, PlusIcon } from './Icons';
 
 interface HeaderProps {
   onNewChat: () => void;
@@ -11,14 +10,15 @@ export const Header: React.FC<HeaderProps> = ({ onNewChat, onToggleSidebar }) =>
   return (
     <header className="[grid-area:header] flex items-center justify-between px-6 bg-[rgba(31,33,33,0.95)] border-b border-border-subtle backdrop-blur-[20px] z-[100]">
       <div className="flex items-center gap-4">
-        <button onClick={onToggleSidebar} className="icon-btn sm:flex hidden items-center justify-center w-10 h-10 lg:hidden md:hidden">
+        <button onClick={onToggleSidebar} className="icon-btn flex md:hidden items-center justify-center w-10 h-10">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
-        <div className="logo flex items-center gap-3 text-lg font-bold bg-gradient-to-r from-teal-300 to-teal-500 bg-clip-text text-transparent">
-          <div className="logo-icon w-8 h-8 rounded-lg bg-gradient-to-r from-teal-300 to-teal-500 flex items-center justify-center text-slate-900">
-            <LogoIcon />
+        <div className="logo flex items-center gap-3 text-lg font-bold">
+          <div className="logo-icon w-9 h-9 rounded-lg bg-gradient-to-br from-rose-500 via-purple-500 to-sky-400 flex items-center justify-center text-white p-1.5 overflow-hidden relative">
+            <StarLogoIcon />
+            <div className="absolute inset-0 animate-shimmer"></div>
           </div>
-          <span>W3J Suite</span>
+          <span className="bg-gradient-to-r from-gray-200 to-teal-300 bg-clip-text text-transparent">W3J Suite</span>
         </div>
       </div>
       <div className="header-center hidden md:flex items-center gap-3 text-md text-text">

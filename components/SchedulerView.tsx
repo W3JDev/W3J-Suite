@@ -2,34 +2,40 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { marked } from 'marked';
 import { Message, GroundingChunk } from '../types';
 import { generateContentStream } from '../services/geminiService';
-import { UserIcon, SendIcon, AttachmentIcon, StarLogoIcon } from './Icons';
+import { UserIcon, LiveIcon, StarLogoIcon } from './Icons';
 import { ConstellationLoader } from './LoadingIndicator';
 
-const EmptyState: React.FC<{ onPromptClick: (prompt: string) => void }> = ({ onPromptClick }) => {
+const SchedulerEmptyState: React.FC<{ onPromptClick: (prompt: string) => void }> = ({ onPromptClick }) => {
     const prompts = [
-        { icon: "🎨", title: "Design Interface", description: "Create stunning UI designs", prompt: "Design a modern landing page" },
-        { icon: "📊", title: "Data Analysis", description: "Get insights from data", prompt: "Analyze my quarterly data" },
-        { icon: "✍️", title: "Content Creation", description: "Generate engaging content", prompt: "Write marketing copy for a new tech product" },
-        { icon: "⚡", title: "App Development", description: "Create interactive apps", prompt: "Outline the components for a React dashboard" },
+      { icon: "⏰", title: "Set Reminder", description: "Automate reminders for tasks", value: "Remind me about the project deadline on Friday at 5pm" },
+      { icon: "📆", title: "Calendar Sync", description: "Keep all events aligned", value: "Sync my work calendar for next week" },
+      { icon: "🧭", title: "Smart Scheduling", description: "Find optimal times", value: "Find a 30 minute slot for a meeting with Jane tomorrow afternoon" },
+      { icon: "📋", title: "Agenda Builder", description: "Custom daily plans", value: "Build my schedule for Monday with a focus on deep work in the morning" },
     ];
-
     return (
-        <div className="flex flex-col items-center justify-center h-full max-w-2xl mx-auto text-center p-4">
-            <div className="text-6xl mb-6 text-sapphire-light" style={{ animation: 'float 3s ease-in-out infinite' }}>
-                <StarLogoIcon className="w-20 h-20" />
-            </div>
-            <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-teal-300 to-teal-500 bg-clip-text text-transparent">HOPE AI Assistant</h1>
-            <p className="text-lg text-text-secondary mb-8">What would you like to build today?</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-8">
-                {prompts.map(p => (
-                    <div key={p.title} onClick={() => onPromptClick(p.prompt)} className="prompt-card bg-[rgba(19,52,59,0.4)] backdrop-blur-[20px] border border-border-subtle rounded-lg p-5 cursor-pointer transition-all duration-200 text-left hover:-translate-y-1 hover:shadow-lg hover:border-primary hover:bg-[rgba(50,184,198,0.1)]">
-                        <div className="text-2xl mb-3">{p.icon}</div>
-                        <div className="text-base font-medium mb-2 text-text">{p.title}</div>
-                        <div className="text-sm text-text-secondary">{p.description}</div>
-                    </div>
-                ))}
-            </div>
+      <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto text-center p-4">
+        <div className="text-8xl mb-6 text-amber-light" style={{ animation: 'float 3s ease-in-out infinite' }}>
+            <StarLogoIcon className="w-24 h-24" />
         </div>
+        <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-amber-300 to-white bg-clip-text text-transparent">W3J Scheduler</h1>
+        <p className="text-lg text-text-secondary mb-12 max-w-xl">Plan, optimize, and automate your agenda. Never miss an important moment.</p>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full mb-8">
+          {prompts.map(p => (
+            <div key={p.title} onClick={() => onPromptClick(p.value)} className="prompt-card bg-surface/60 backdrop-blur-xl border border-border-subtle rounded-2xl p-6 cursor-pointer transition-all duration-300 text-left hover:-translate-y-2 hover:shadow-premium hover:border-primary">
+              <div className="text-3xl mb-3">{p.icon}</div>
+              <h3 className="text-lg font-semibold mb-2 text-text">{p.title}</h3>
+              <p className="text-sm text-text-secondary">{p.description}</p>
+            </div>
+          ))}
+        </div>
+        
+        <div className="flex gap-4 justify-center w-full">
+          <button className="px-6 py-3 rounded-lg bg-primary/15 border border-primary/40 text-white font-medium cursor-pointer transition-all flex items-center gap-2 hover:bg-primary/25 hover:-translate-y-0.5 hover:shadow-md"><span>🗓️</span><span>Add Event</span></button>
+          <button className="px-6 py-3 rounded-lg bg-primary/15 border border-primary/40 text-white font-medium cursor-pointer transition-all flex items-center gap-2 hover:bg-primary/25 hover:-translate-y-0.5 hover:shadow-md"><span>🔄</span><span>Sync</span></button>
+          <button className="px-6 py-3 rounded-lg bg-primary/15 border border-primary/40 text-white font-medium cursor-pointer transition-all flex items-center gap-2 hover:bg-primary/25 hover:-translate-y-0.5 hover:shadow-md"><span>✅</span><span>Checklist</span></button>
+        </div>
+      </div>
     );
 };
 
@@ -44,7 +50,7 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
 
     return (
         <div className={`flex gap-4 animate-[fade-in-up_0.4s_ease-in-out] ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-10 h-10 p-2 rounded-full flex-shrink-0 flex items-center justify-center text-white ${message.role === 'user' ? 'bg-gradient-to-br from-rose-400 to-red-500' : 'bg-gradient-to-br from-sapphire-light to-sapphire'}`}>
+            <div className={`w-10 h-10 p-2 rounded-full flex-shrink-0 flex items-center justify-center text-white ${message.role === 'user' ? 'bg-gradient-to-br from-rose-400 to-red-500' : 'bg-gradient-to-br from-amber-light to-amber-dark'}`}>
                 {message.role === 'user' ? <UserIcon className="w-6 h-6" /> : <StarLogoIcon />}
             </div>
             <div className={`max-w-[70%] flex flex-col gap-2 ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
@@ -78,11 +84,11 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
 
 const TypingIndicator: React.FC = () => (
     <div className="flex gap-4 animate-[fade-in-up_0.4s_ease-in-out]">
-        <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white p-2 bg-gradient-to-br from-sapphire-light to-sapphire">
+        <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white p-2 bg-gradient-to-br from-amber-light to-amber-dark">
             <StarLogoIcon />
         </div>
         <div className="max-w-[70%] flex flex-col gap-2 items-start">
-            <div className="p-4 rounded-xl border bg-[rgba(19,52,59,0.4)] backdrop-blur-lg border-border-subtle flex items-center justify-center h-[100px] w-[132px]">
+             <div className="p-4 rounded-xl border bg-[rgba(19,52,59,0.4)] backdrop-blur-lg border-border-subtle flex items-center justify-center h-[100px] w-[132px]">
                 <ConstellationLoader />
             </div>
         </div>
@@ -90,7 +96,7 @@ const TypingIndicator: React.FC = () => (
 );
 
 
-export const ChatCanvas: React.FC = () => {
+export const SchedulerView: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -157,11 +163,11 @@ export const ChatCanvas: React.FC = () => {
     setMessages(prev => [...prev, modelMessage]);
 
     try {
-        const chatSystemInstruction = "You are HOPE, a friendly and helpful AI assistant from W3J. You are an expert in a wide range of topics, including design, data analysis, content creation, and app development. Use Google Search and Google Maps to provide accurate, up-to-date information. Be conversational and engaging.";
+        const schedulerSystemInstruction = "You are HOPE, an AI assistant in the W3J Scheduler app. Your role is to help users manage their schedule. You can set reminders, schedule meetings, sync calendars, and build agendas. Respond as if you have access to the user's calendar and can perform these actions. Be helpful, concise, and confirm the actions you've taken. Use natural language. When a user asks you to schedule something, create a plausible response confirming the event has been scheduled.";
         const stream = generateContentStream({ 
             prompt: input, 
-            location,
-            systemInstruction: chatSystemInstruction 
+            location, 
+            systemInstruction: schedulerSystemInstruction 
         });
         
         for await (const chunk of stream) {
@@ -199,13 +205,21 @@ export const ChatCanvas: React.FC = () => {
 
   const handlePromptClick = (prompt: string) => {
       setInput(prompt);
-      textareaRef.current?.focus();
+      const textarea = textareaRef.current;
+      if (textarea) {
+          textarea.focus();
+          // We need a timeout to ensure the value is set before we calculate scrollHeight
+          setTimeout(() => {
+              textarea.style.height = 'auto';
+              textarea.style.height = `${textarea.scrollHeight}px`;
+          }, 0);
+      }
   };
 
   return (
     <>
       <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-6">
-        {messages.length === 0 ? <EmptyState onPromptClick={handlePromptClick} /> : (
+        {messages.length === 0 ? <SchedulerEmptyState onPromptClick={handlePromptClick} /> : (
           <>
             {messages.map(msg => <MessageBubble key={msg.id} message={msg} />)}
             {isLoading && messages[messages.length-1]?.role === 'model' && <div />}
@@ -216,32 +230,35 @@ export const ChatCanvas: React.FC = () => {
       </div>
 
       <div className="p-6 border-t border-border-subtle bg-surface">
-        <div className="max-w-4xl mx-auto bg-charcoal-800 border-2 border-border rounded-xl p-4 flex flex-col gap-2 transition-all duration-200 focus-within:border-primary focus-within:shadow-lg">
-            <div className="flex items-end gap-3">
-                <button className="w-9 h-9 flex-shrink-0 rounded-lg text-lg flex items-center justify-center cursor-pointer transition-colors text-text-secondary hover:bg-[rgba(119,124,124,0.2)] hover:text-text">
-                    <AttachmentIcon className="w-5 h-5" />
+        <div className="max-w-4xl mx-auto">
+            <div className="flex items-center gap-3 mb-3 bg-charcoal-800 border border-border rounded-xl p-3 transition-all duration-200 focus-within:border-primary focus-within:shadow-lg">
+                <button className="w-10 h-10 flex-shrink-0 rounded-lg text-lg flex items-center justify-center cursor-pointer transition-colors text-text-secondary hover:bg-surface hover:text-text" title="Attach file">
+                    <span>📎</span>
                 </button>
                 <textarea
                     ref={textareaRef}
-                    className="flex-1 bg-transparent border-none outline-none text-text text-md resize-none max-h-48 overflow-y-auto placeholder:text-text-tertiary"
-                    placeholder="Ask HOPE anything..."
+                    className="flex-1 bg-transparent border-none outline-none text-text text-md resize-none max-h-48 overflow-y-auto placeholder:text-text-secondary"
+                    placeholder="Schedule a meeting or set a reminder..."
                     rows={1}
                     value={input}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyPress}
                     disabled={isLoading}
                 />
+                <button className="w-10 h-10 flex-shrink-0 rounded-lg text-lg flex items-center justify-center cursor-pointer transition-colors text-text-secondary hover:bg-surface hover:text-text" title="Voice input">
+                    <LiveIcon className="w-5 h-5"/>
+                </button>
                 <button
-                    className="w-12 h-12 flex-shrink-0 rounded-md bg-gradient-to-r from-teal-300 to-teal-500 text-slate-900 text-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_40px_rgba(50,184,198,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-10 h-10 flex-shrink-0 rounded-md bg-gradient-to-r from-teal-300 to-teal-500 text-slate-900 text-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_40px_rgba(50,184,198,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={sendMessage}
                     disabled={!input.trim() || isLoading}
                     title="Send message"
                 >
-                   {isLoading ? <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div> : <SendIcon className="w-5 h-5" />}
+                    {isLoading ? <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div> : <span className="text-2xl">▶</span>}
                 </button>
             </div>
+            <div className="text-center text-xs text-text-tertiary">Natural language scheduling • Smart conflicts • Auto-sync</div>
         </div>
-        <div className="text-center text-xs text-text-tertiary mt-3">W3J Suite | HOPE AI by W3JDEV (W3J LLC) | Shift+Enter for new line</div>
       </div>
     </>
   );

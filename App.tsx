@@ -5,11 +5,13 @@ import { Sidebar } from './components/Sidebar';
 import { ContextPanel } from './components/ContextPanel';
 import { ChatCanvas } from './components/ChatCanvas';
 import { LiveAgentView } from './components/LiveAgentView';
+import { MediaSuiteView } from './components/MediaSuiteView';
+import { SchedulerView } from './components/SchedulerView';
 
-type View = 'chat' | 'live';
+export type AppView = 'chat' | 'live' | 'media' | 'scheduler';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<View>('chat');
+  const [activeView, setActiveView] = useState<AppView>('scheduler');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleNewChat = useCallback(() => {
@@ -20,14 +22,35 @@ const App: React.FC = () => {
   
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
 
+  const renderActiveView = () => {
+    switch(activeView) {
+      case 'chat':
+        return <ChatCanvas />;
+      case 'media':
+        return <MediaSuiteView />;
+      case 'live':
+        return <LiveAgentView />;
+      case 'scheduler':
+        return <SchedulerView />;
+      default:
+        return <ChatCanvas />;
+    }
+  }
+
   return (
     <div className="app-container bg-background">
       <Header onNewChat={handleNewChat} onToggleSidebar={toggleSidebar} />
-      <Sidebar activeView={activeView} setActiveView={setActiveView} isSidebarOpen={isSidebarOpen} />
+      <Sidebar 
+        activeView={activeView} 
+        setActiveView={setActiveView} 
+        isSidebarOpen={isSidebarOpen} 
+        onClose={toggleSidebar} 
+      />
       
+      {isSidebarOpen && <div className="sidebar-backdrop open md:hidden" onClick={toggleSidebar}></div>}
+
       <main className="[grid-area:main] flex flex-col bg-background relative min-h-0">
-        {activeView === 'chat' && <ChatCanvas />}
-        {activeView === 'live' && <LiveAgentView />}
+        {renderActiveView()}
       </main>
 
       <ContextPanel />

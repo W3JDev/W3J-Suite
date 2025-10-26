@@ -1,11 +1,13 @@
 
 import React from 'react';
-import { ChatIcon, LiveIcon, SettingsIcon } from './Icons';
+import { ChatIcon, LiveIcon, SettingsIcon, MediaIcon, SchedulerIcon } from './Icons';
+import { AppView } from '../App';
 
 interface SidebarProps {
-  activeView: string;
-  setActiveView: (view: 'chat' | 'live') => void;
+  activeView: AppView;
+  setActiveView: (view: AppView) => void;
   isSidebarOpen: boolean;
+  onClose: () => void;
 }
 
 const NavItem: React.FC<{ icon: React.ReactNode; label: string; active?: boolean; onClick?: () => void }> = ({ icon, label, active, onClick }) => (
@@ -31,12 +33,20 @@ const HistoryItem: React.FC<{ label: string; active?: boolean }> = ({ label, act
 );
 
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isSidebarOpen }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isSidebarOpen, onClose }) => {
+  
+  const handleNavClick = (view: AppView) => {
+    setActiveView(view);
+    onClose();
+  };
+
   return (
-    <aside className={`sidebar [grid-area:sidebar] bg-surface border-r border-border-subtle flex-col overflow-hidden hidden md:flex ${isSidebarOpen ? 'open' : ''}`}>
-      <nav className="p-4">
-        <NavItem icon={<ChatIcon />} label="Chat Agent" active={activeView === 'chat'} onClick={() => setActiveView('chat')} />
-        <NavItem icon={<LiveIcon />} label="Live Agent" active={activeView === 'live'} onClick={() => setActiveView('live')} />
+    <aside className={`sidebar [grid-area:sidebar] bg-surface border-r border-border-subtle flex flex-col overflow-hidden ${isSidebarOpen ? 'open' : ''}`}>
+      <nav className="p-4 space-y-2">
+        <NavItem icon={<ChatIcon />} label="Chat Agent" active={activeView === 'chat'} onClick={() => handleNavClick('chat')} />
+        <NavItem icon={<MediaIcon />} label="Media Suite" active={activeView === 'media'} onClick={() => handleNavClick('media')} />
+        <NavItem icon={<LiveIcon />} label="Live Agent" active={activeView === 'live'} onClick={() => handleNavClick('live')} />
+        <NavItem icon={<SchedulerIcon />} label="Scheduler" active={activeView === 'scheduler'} onClick={() => handleNavClick('scheduler')} />
       </nav>
 
       <div className="conversation-history flex-1 overflow-y-auto px-4 flex flex-col gap-4">
